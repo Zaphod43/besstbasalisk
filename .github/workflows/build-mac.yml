@@ -1,1 +1,17 @@
-
+name: Build macOS app
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt pyinstaller
+      - run: python -m PyInstaller --windowed --name BatteryOptimizer main.py
+      - run: ditto -c -k --keepParent dist/BatteryOptimizer.app BatteryOptimizer-mac.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BatteryOptimizer-mac
+          path: BatteryOptimizer-mac.zip
